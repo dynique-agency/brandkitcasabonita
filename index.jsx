@@ -73,37 +73,39 @@ const BrandLab = () => {
     return [containerRef, isVisible];
   };
 
-  // Reusable Logo Component with GOLD GRADIENT support
-  const Logo = ({ className = "w-24 h-24", useGradient = true, animate = false }) => (
-    <svg viewBox="0 0 100 100" className={`${className} ${animate ? 'logo-animate' : ''}`} fill="none" stroke={useGradient ? "url(#goldGradient)" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <defs>
-        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#D4AF37" />
-          <stop offset="50%" stopColor="#C5A059" />
-          <stop offset="100%" stopColor="#B08D55" />
-        </linearGradient>
-      </defs>
-      
-      {/* The Arch */}
-      <path d="M20 90 V 50 A 30 30 0 0 1 80 50 V 90" strokeWidth="2" className="path-draw delay-100" />
-      <path d="M15 90 H 85" strokeWidth="2.5" className="path-draw delay-200" />
-      <path d="M25 90 V 50 A 25 25 0 0 1 75 50 V 90" strokeWidth="0.75" opacity="0.8" className="path-draw delay-300" />
-      
-      {/* Keystone */}
-      <path d="M46 20 H 54 L 52 26 H 48 Z" fill={useGradient ? "url(#goldGradient)" : "currentColor"} stroke="none" className="fade-in delay-500" />
-      
-      {/* The Olive Branch */}
-      <path d="M45 85 Q 35 80 40 50" className="path-draw delay-400" /> 
-      <path d="M40 60 Q 32 58 35 48" className="path-draw delay-500" /> 
-      <path d="M42 55 Q 46 52 44 42" className="path-draw delay-600" /> 
-      <path d="M38 70 Q 32 68 34 62" className="path-draw delay-700" /> 
+  // Reusable Logo Component using image files with background removal
+  const Logo = ({ className = "w-24 h-24", variant = "logo", animate = false, removeBg = true }) => {
+    const getLogoSrc = () => {
+      switch(variant) {
+        case "header":
+          return "/headerlogo.png";
+        case "icon":
+          return "/favicon.png";
+        case "logo":
+        default:
+          return "/logo.png";
+      }
+    };
 
-      {/* The Wave */}
-      <path d="M52 85 Q 60 78 70 85" className="path-draw delay-800" />
-      <path d="M57 75 Q 65 68 75 75" className="path-draw delay-900" />
-      <path d="M62 65 Q 67 60 72 65" className="path-draw delay-1000" />
-    </svg>
-  );
+    return (
+      <div 
+        className={`${className} ${animate ? 'logo-animate' : ''} logo-container`}
+        style={{ position: 'relative', display: 'inline-block' }}
+      >
+        <img 
+          src={getLogoSrc()} 
+          alt="Casa Bonita Logo" 
+          className={removeBg ? 'logo-no-bg' : ''}
+          style={{ 
+            objectFit: 'contain', 
+            height: 'auto',
+            width: '100%',
+            display: 'block'
+          }}
+        />
+      </div>
+    );
+  };
 
   // Magnetic Button Component - Mobile Optimized
   const MagneticButton = ({ children, className }) => {
@@ -350,6 +352,44 @@ const BrandLab = () => {
           .animate-\\[shimmer_3s_infinite\\] {
             animation: shimmer 3s infinite;
           }
+
+          /* Logo Background Removal - Perfect Technique */
+          .logo-no-bg {
+            /* Primary method: Multiply blend mode removes white backgrounds on light surfaces */
+            mix-blend-mode: multiply;
+            /* Enhance to remove light pixels and improve contrast */
+            filter: contrast(1.2) brightness(1.1) saturate(1.15);
+            /* Ensure crisp rendering */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+          }
+          
+          /* For logos on white/light backgrounds */
+          .bg-white .logo-no-bg,
+          .bg-\\[\\#F2F0E9\\] .logo-no-bg,
+          .bg-white\\/80 .logo-no-bg {
+            mix-blend-mode: multiply;
+            filter: contrast(1.25) brightness(1.12) saturate(1.2);
+          }
+          
+          /* For logos on dark backgrounds - invert and use screen */
+          .bg-\\[\\#1C1C1C\\] .logo-no-bg,
+          .bg-black .logo-no-bg {
+            mix-blend-mode: screen;
+            filter: contrast(1.2) brightness(0.85);
+          }
+          
+          /* For logos on gradient/gold backgrounds */
+          .bg-gradient-to-br .logo-no-bg {
+            mix-blend-mode: multiply;
+            filter: contrast(1.3) brightness(1.15) saturate(1.25);
+          }
+          
+          /* Container isolation for proper blending context */
+          .logo-container {
+            isolation: isolate;
+            background: transparent;
+          }
         `}
       </style>
 
@@ -369,7 +409,7 @@ const BrandLab = () => {
         <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/80 backdrop-blur-xl border-r border-[#E5E5E5] transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]`}>
           <div className="p-10 border-b border-[#E5E5E5]/50 flex justify-between items-center">
             <div className="flex flex-col items-center w-full">
-              <Logo className="w-16 h-16 mb-4" />
+              <Logo className="w-16 h-16 mb-4" variant="header" />
               <h1 className="font-cinzel font-bold text-lg tracking-[0.25em] text-[#1C1C1C]">CASA<br/>BONITA</h1>
               <span className="text-[9px] uppercase tracking-[0.4em] text-[#A89F91] mt-2">Brand Laboratory</span>
             </div>
@@ -410,7 +450,7 @@ const BrandLab = () => {
         
         {/* Mobile Header */}
         <div className="md:hidden w-full flex justify-between items-center mb-8 pt-4">
-           <Logo className="w-10 h-10" />
+           <Logo className="w-10 h-10" variant="header" />
            <button onClick={() => setMobileMenuOpen(true)} className="p-2">
              <Menu size={24} color="#1C1C1C" />
            </button>
@@ -457,7 +497,7 @@ const BrandLab = () => {
                    {essenceContent[lang].manifesto}
                  </p>
                  <div className="mt-8 text-center">
-                    <Logo className="w-8 h-8 mx-auto opacity-50" />
+                    <Logo className="w-8 h-8 mx-auto opacity-50" variant="icon" />
                  </div>
               </div>
 
@@ -556,7 +596,7 @@ const BrandLab = () => {
                   <div className="absolute top-6 left-6 text-[10px] font-montserrat text-[#A89F91] uppercase tracking-[0.3em] hidden md:block">Hover to Animate</div>
                   
                   <div className="text-center transform transition-transform duration-700">
-                    <Logo className="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8" animate={true} />
+                    <Logo className="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8" variant="logo" animate={true} />
                     <div>
                       <h1 className="font-cinzel font-bold text-2xl md:text-4xl tracking-[0.3em] text-[#1C1C1C]">CASA BONITA</h1>
                       <div className="flex items-center justify-center space-x-4 mt-4">
@@ -573,7 +613,7 @@ const BrandLab = () => {
                    <div className="bg-gradient-to-br from-[#D4AF37] to-[#B08D55] p-12 md:p-16 flex flex-col items-center justify-center text-white relative shadow-2xl rounded-sm">
                        <span className="absolute top-6 left-6 text-[10px] font-montserrat text-white/50 uppercase tracking-[0.3em] hidden md:block">Favicon / Social</span>
                        <div className="w-48 h-48 bg-white rounded-full flex items-center justify-center shadow-lg">
-                          <Logo className="w-24 h-24" />
+                          <Logo className="w-24 h-24" variant="icon" />
                        </div>
                    </div>
                 </div>
