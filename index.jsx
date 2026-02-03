@@ -596,15 +596,7 @@ const BrandLab = () => {
                   <div className="absolute top-6 left-6 text-[10px] font-montserrat text-[#A89F91] uppercase tracking-[0.3em] hidden md:block">Hover to Animate</div>
                   
                   <div className="text-center transform transition-transform duration-700">
-                    <Logo className="w-32 h-32 md:w-48 md:h-48 mx-auto mb-8" variant="logo" animate={true} />
-                    <div>
-                      <h1 className="font-cinzel font-bold text-2xl md:text-4xl tracking-[0.3em] text-[#1C1C1C]">CASA BONITA</h1>
-                      <div className="flex items-center justify-center space-x-4 mt-4">
-                        <div className="w-8 md:w-12 h-[1px] bg-[#D4AF37]"></div>
-                        <p className="font-montserrat text-[9px] md:text-[10px] tracking-[0.5em] text-[#6B705C] uppercase">Mallorca</p>
-                        <div className="w-8 md:w-12 h-[1px] bg-[#D4AF37]"></div>
-                      </div>
-                    </div>
+                    <Logo className="w-full max-w-[400px] mx-auto" variant="logo" animate={true} />
                   </div>
                 </div>
 
