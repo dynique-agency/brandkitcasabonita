@@ -6,5 +6,7 @@ export default defineConfig({
   server: {
     port: 6301,
     open: true
-  }
+  },
+  // Uncomment for GitHub Pages deployment:
+  // base: '/brandkitcasabonita/'
 })
